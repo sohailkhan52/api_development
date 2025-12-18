@@ -1,4 +1,8 @@
 <?php
+
+// --------------------
+// DB.PHP in clude database connection and $jwt_secret
+// --------------------
 include "db.php";
 require 'vendor/autoload.php';
 use Medoo\Medoo;
@@ -35,6 +39,15 @@ try {
     exit;
 }
 
+
+
+
+// --------------------
+// End POINT
+// --------------------
+        
+$end_point="http://localhost/project_medoo/country.php";
+
 // --------------------
 // Routing logic
 // --------------------
@@ -43,9 +56,9 @@ $method = $_SERVER['REQUEST_METHOD'];
 switch($method) {
 
      //---------------------
-     // Create country
+     // read country
      //---------------------
-    case 'GET': // Read countries
+    case 'GET': 
 
      $country=$db->select("countries","*");
 
@@ -80,7 +93,7 @@ switch($method) {
       $status=$_POST["status"]??"active";
 
 
-     //arranging string according to the requirment
+     //arranging string according to the requirment of the table
       $iso =trim($iso);
       $iso =strtoupper($iso);
       $name =trim($name);
@@ -107,14 +120,18 @@ switch($method) {
           exit;
        }
 
+     //extracting the user id from verified jwt token
+      $user_id = $decoded->id;   
+      
+      //getting user data with the help of user id
 
-      $user_id = $decoded->id;   // object access
- 
       $user=$db->get("users","*",["id"=>$user_id]);
       if(!$user){
           echo json_encode(["error"=>"user identity did not found"]);
           exit;
       }
+
+      //if user is valid then allow to  add new country 
       if($user){
       $result=$db->insert("countries",[
           "id"=>null,
@@ -126,11 +143,14 @@ switch($method) {
           "phonecode"=>$phonecode,
           "status"=>$status
       ]);
-
+      // if the addition of new country fails then show the response
       if(!$result){
           echo json_encode(["error"=>"adding country error"]);
           exit;
       }else{
+
+        
+      // if the addition of new country adds successfully then show the reponse
           echo json_encode([
               "status"=>"Country added successfully",
               "data"=>$result
@@ -143,9 +163,11 @@ switch($method) {
 
 
         break;
+
     //---------------------
     // update country
     //---------------------
+
     case 'PUT': // Update country
        
      $input = json_decode(file_get_contents("php://input"), true);
@@ -157,6 +179,10 @@ switch($method) {
      echo json_encode(["error"=>"invalid country id "]);
         exit;
       }
+
+
+    //   i ma using $updatedata array which stores the input fields  which can be used to updated country data in countries table 
+
 
       $updatedata= [];
 
@@ -184,7 +210,7 @@ switch($method) {
       $updatedata['status']=trim($input['status']);
      }
 
-
+     //using medoo 
 
       $result=$db->update("countries",$updatedata,["id"=>$id]);
 
@@ -209,10 +235,16 @@ switch($method) {
      $country_id = $input['id'] ?? null;
 
 
-     $decode=JWT::decode($token,new key($jwt_secret,"HS256"));
+    //  taking user id from the decoded token 
+
+
      $user_id=$decode->id;
+
+    // check that the deleting country is a proper user or not 
+
      $user=$db->get("users","*",['id'=>$user_id]);
      if($user){
+     
       $result=$db->delete("countries",["id"=>$country_id]);
       if(!$result){
         echo json_encode(["error"=>"deleting error occure"]);
