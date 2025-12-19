@@ -128,19 +128,7 @@ switch ($method) {
             exit;
           }
 
-               //extracting the user id from verified jwt token
-      $user_id = $decoded->id;   
-      
-      //getting user data with the help of user id
 
-      $user=$db->get("users","*",["id"=>$user_id]);
-      if(!$user){
-          echo json_encode(["error"=>"user identity did not found"]);
-          exit;
-      }
-
-      //if user is valid then allow to  add new country 
-      if($user){
           $result=$db->insert("languages",[
             "status"=>$status,
             "default"=>$default,
@@ -164,7 +152,7 @@ switch ($method) {
             exit;
 
           }
-          }
+          
         break;
 
            //---------------------
@@ -198,19 +186,7 @@ switch ($method) {
         if(isset($input['lang_code'])){
          $languagedata['lang_code']=strtolower(trim($input['lang_code']??null));
         }
-             //extracting the user id from verified jwt token
-      $user_id = $decoded->id;   
-      
-      //getting user data with the help of user id
-
-      $user=$db->get("users","*",["id"=>$user_id]);
-      if(!$user){
-          echo json_encode(["error"=>"user identity did not found"]);
-          exit;
-      }
-
-      //if user is valid then allow to  add new country 
-      if($user){
+          
      //using medoo 
         $result=$db->update("languages",$languagedata,['id'=>$lang_id]);
 
@@ -222,7 +198,7 @@ switch ($method) {
             echo json_encode(['success'=>"upadating language successfully"]);
             exit;
         }
-        }
+        
         break;
 
     //---------------------
@@ -231,19 +207,7 @@ switch ($method) {
     case 'DELETE':
         $input=json_decode(file_get_contents("php://input"),true);
         $id=$input['id']??null;
-     //extracting the user id from verified jwt token
-      $user_id = $decoded->id;   
-      
-      //getting user data with the help of user id
-
-      $user=$db->get("users","*",["id"=>$user_id]);
-      if(!$user){
-          echo json_encode(["error"=>"user identity did not found"]);
-          exit;
-      }
-
-      //if user is valid then allow to  add new country 
-      if($user){
+     
         $result=$db->delete("languages",['id'=>$id]);
         if(!$result){
             http_response_code(401);
@@ -253,7 +217,7 @@ switch ($method) {
             echo json_encode(["success"=>"deleting language successfully"]);
             exit;
         }
-        }
+        
         break;
     
          default:
