@@ -120,19 +120,7 @@ switch($method) {
           exit;
        }
 
-     //extracting the user id from verified jwt token
-      $user_id = $decoded->id;   
-      
-      //getting user data with the help of user id
-
-      $user=$db->get("users","*",["id"=>$user_id]);
-      if(!$user){
-          echo json_encode(["error"=>"user identity did not found"]);
-          exit;
-      }
-
-      //if user is valid then allow to  add new country 
-      if($user){
+ 
       $result=$db->insert("countries",[
           "id"=>null,
           "iso"=>$iso,
@@ -157,7 +145,7 @@ switch($method) {
           ]);
           exit;
       }
-      }
+      
 
 
 
@@ -211,7 +199,7 @@ switch($method) {
      }
 
      //using medoo 
-
+    
       $result=$db->update("countries",$updatedata,["id"=>$id]);
 
       if(!$result){
@@ -222,7 +210,7 @@ switch($method) {
        "success"=>"country updated successfull",
        "data"=>$result
        ]);
-
+    
 
         
 
@@ -238,12 +226,6 @@ switch($method) {
     //  taking user id from the decoded token 
 
 
-     $user_id=$decode->id;
-
-    // check that the deleting country is a proper user or not 
-
-     $user=$db->get("users","*",['id'=>$user_id]);
-     if($user){
      
       $result=$db->delete("countries",["id"=>$country_id]);
       if(!$result){
@@ -257,7 +239,7 @@ switch($method) {
      ]);
 
       exit;
-}
+
 
         break;
 
