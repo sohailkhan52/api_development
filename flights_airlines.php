@@ -171,13 +171,7 @@ switch ($method) {
 
 
 
-         $user_id=$decoded->id;
-         $user=$db->get("users","*",['id'=>$user_id]);
-         if(!$user){
-            http_response_code(401);
-            echo json_encode(["error"=>"user not found"]);
-            exit;
-         }else{
+        
 
           //   medoo update query 
 
@@ -190,7 +184,7 @@ switch ($method) {
             }
             echo json_encode(['seccess'=>"data updated successfully"]);
                 exit;
-         }
+         
         # code...
         break;
          //---------------------
@@ -200,18 +194,11 @@ switch ($method) {
     case "DELETE":
         $input=json_decode(file_get_contents("php://input"),true);
         $id=$input['id'];
-     //  taking user id from the decoded token 
-
-        $user_id=$decoded->id;
-
-        
-    // check that the deleting country is a proper user or not 
-        $user=$db->get("users","*",['id'=>$user_id]);
-        if($user){
+  
             $result=$db->delete("flights_airlines",['id'=>$id]);
             echo json_encode(["success"=>"flights airlines id deleted successfully"]);
             exit;
-        }
+       
          echo json_encode(["error"=>"flights airlines id deleting error "]);
             exit;
         break;
