@@ -10,6 +10,9 @@ use Firebase\JWT\Key;
 // --------------------
 // Get Bearer token
 // --------------------
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
 $headers = getallheaders();
 $auth = $headers['Authorization'] ?? '';
 if (!preg_match('/Bearer\s(\S+)/', $auth, $matches)) {
@@ -93,6 +96,7 @@ switch ($method) {
             "count" => count($result),
             "data" => $result
         ]);
+        exit;
         break;
 
 
