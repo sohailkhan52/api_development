@@ -40,12 +40,6 @@ try {
 
 
 // --------------------
-// End POINT
-// --------------------
-
-$end_point = "http://localhost/project_medoo/country.php";
-
-// --------------------
 // Routing logic
 // --------------------
 $method = $_SERVER['REQUEST_METHOD'];
@@ -245,3 +239,4 @@ switch ($method) {
     http_response_code(405);
     echo json_encode(["error" => "Invalid request method"]);
 }
+
